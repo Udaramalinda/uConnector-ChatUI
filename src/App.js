@@ -1,23 +1,25 @@
-import logo from './logo.svg';
+import Chat from './components/chat/chat';
+import Detail from './components/detail/detail';
+import List from './components/list/list';
+import Login from './components/login/login';
+import Notification from './components/notification/notification';
+
 import './App.css';
 
 function App() {
+  const user = true;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      {user ? (
+        <>
+          <List />
+          <Chat />
+          <Detail />
+        </>
+      ) : (
+        <Login />
+      )}
+      <Notification />
     </div>
   );
 }

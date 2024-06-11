@@ -1,0 +1,91 @@
+.chatList {
+  flex: 1;
+  overflow-y: scroll; /* This will apply vertical scrolling */
+  overflow-x: hidden; /* This will hide the horizontal scrollbar */
+}
+
+.chatList::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+
+.chatList::-webkit-scrollbar-track {
+  background: transparent; /* color of the tracking area */
+}
+
+.chatList::-webkit-scrollbar-thumb {
+  background-color: rgba(108, 117, 125, 0.5); /* semi-transparent color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid transparent; /* creates padding around scroll thumb */
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #dddddd35;
+}
+
+.search .searchBar {
+  flex: 1;
+  background-color: rgba(17, 25, 40, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.search .searchBar input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  flex: 1;
+}
+
+.search .searchBar img {
+  width: 16px;
+  height: 16px;
+}
+
+.search .add {
+  width: 13px;
+  height: 13px;
+  background-color: rgba(17, 25, 40, 0.5);
+  padding: 11px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 20px 15px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #dddddd35;
+}
+
+.item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.item .texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.item .texts span {
+  font-weight: 500;
+}
+
+.item .texts p {
+  font-size: 14px;
+  font-weight: 300;
+  margin: 5px 0px 0px 0px;
+  color: #a5a5a5;
+}
