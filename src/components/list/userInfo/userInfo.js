@@ -4,9 +4,7 @@ export default function UserInfo() {
   return (
     <div className='userInfo'>
       <div className="user">
-        {/* <img src={currentUser.avatar || "./avatar.png"} alt="" />
-        <h2>{currentUser.username || "µConnector"}</h2> */}
-        <img src="./avatar.png" alt="" />
+        <img src="./logo.png" alt="" />
         <h2 className='userInfo-name'>{"µConnector"}</h2>
       </div>
       <div className="icons">

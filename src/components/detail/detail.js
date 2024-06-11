@@ -1,9 +1,11 @@
 import './detail.css';
+import { auth } from '../../library/firebase';
+import { useUserStore } from '../../library/userStore';
 
 export default function Detail() {
   // const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat } =
   //   useChatStore();
-  // const { currentUser } = useUserStore();
+  const { currentUser } = useUserStore();
 
   // const handleBlock = async () => {
   //   if (!user) return;
@@ -20,10 +22,10 @@ export default function Detail() {
   //   }
   // };
 
-  // const handleLogout = () => {
-  //   auth.signOut();
-  //   resetChat()
-  // };
+  const handleLogout = () => {
+    auth.signOut();
+    // resetChat();
+  };
 
   return (
     <div className='detail'>
@@ -107,7 +109,7 @@ export default function Detail() {
             <img src='./arrowUp.png' alt='' />
           </div>
         </div>
-        <button 
+        <button
         // onClick={handleBlock}
         >
           {/* {isCurrentUserBlocked
@@ -117,9 +119,7 @@ export default function Detail() {
             : 'Block User'} */}
           {'Block User'}
         </button>
-        <button className='logout' 
-        // onClick={handleLogout}
-        >
+        <button className='logout' onClick={handleLogout}>
           Logout
         </button>
       </div>

@@ -1,6 +1,8 @@
 import './chatList.css';
 import { useState } from 'react';
 
+import AddUser from './addUser/addUser';
+
 export default function ChatList() {
   // const [chats, setChats] = useState([]);
   const [addMode, setAddMode] = useState(false);
@@ -82,8 +84,7 @@ export default function ChatList() {
         />
       </div>
 
-
-    {/* Have to remove later */}
+      {/* Have to remove later */}
       <div className='item'>
         <img src='./avatar.png' alt='' />
         <div className='texts'>
@@ -196,8 +197,6 @@ export default function ChatList() {
           <p>Hello</p>
         </div>
       </div>
-
-
 
       {/* {filteredChats.map((chat) => (
         <div
@@ -226,8 +225,8 @@ export default function ChatList() {
           </div>
         </div>
       ))}
-
-      {addMode && <AddUser />} */}
+*/}
+      {addMode && <AddUser />}
     </div>
   );
 }
