@@ -89,7 +89,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Logged in success!')
+      toast.success('Login success!')
     } catch (err) {
       console.log(err);
       toast.error(err.message);
