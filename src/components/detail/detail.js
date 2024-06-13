@@ -1,40 +1,28 @@
 import './detail.css';
 import { auth } from '../../library/firebase';
 import { useUserStore } from '../../library/userStore';
+import { useChatStore } from '../../library/chatStore';
 
 export default function Detail() {
-  // const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat } =
-  //   useChatStore();
+  const { chatId, chatDetails, resetChat } = useChatStore();
   const { currentUser } = useUserStore();
 
-  // const handleBlock = async () => {
-  //   if (!user) return;
-
-  //   const userDocRef = doc(db, "users", currentUser.id);
-
-  //   try {
-  //     await updateDoc(userDocRef, {
-  //       blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
-  //     });
-  //     changeBlock();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  // have to implement this function
+  const handleDeleteChat = () => {
+    console.log('Delete Chat');
+  };
 
   const handleLogout = () => {
     auth.signOut();
-    // resetChat();
+    resetChat();
   };
 
   return (
     <div className='detail'>
       <div className='user'>
-        {/* <img src={user?.avatar || "./avatar.png"} alt="" /> */}
-        {/* <h2>{user?.username}</h2> */}
-        <img src='./avatar.png' alt='' />
-        <h2>Udara Malinda</h2>
-        <p>Message only not for calling</p>
+        <img src={chatDetails?.receiverAvatar || "./avatar.png"} alt="" />
+        <h2>{chatDetails?.receiverName}</h2>
+        <p>{chatDetails?.receiverChannel}</p>
       </div>
       <div className='info'>
         <div className='option'>
@@ -110,14 +98,9 @@ export default function Detail() {
           </div>
         </div>
         <button
-        // onClick={handleBlock}
+        onClick={handleDeleteChat}
         >
-          {/* {isCurrentUserBlocked
-            ? 'You are Blocked!'
-            : isReceiverBlocked
-            ? 'User blocked'
-            : 'Block User'} */}
-          {'Block User'}
+          {'Delete Chat'}
         </button>
         <button className='logout' onClick={handleLogout}>
           Logout

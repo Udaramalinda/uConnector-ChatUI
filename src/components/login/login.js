@@ -38,20 +38,24 @@ export default function Login() {
     setLoading(true);
     const formData = new FormData(e.target);
 
-    const { username, email, password } = Object.fromEntries(formData);
-    // console.log(username, email, password);
+    const { username, email, phone, password } = Object.fromEntries(formData);
 
     // VALIDATE INPUTS
-    if (!username || !email || !password)
+    if (!username || !email || !password || !phone)
       return toast.warn('Please enter inputs!');
     if (!avatar.file) return toast.warn('Please upload an avatar!');
 
     // VALIDATE UNIQUE USERNAME
     const usersRef = collection(db, 'users');
-    const q = query(usersRef, where('username', '==', username));
+    const q = query(usersRef, where('email', '==', email));
+    const p = query(usersRef, where('phone', '==', phone));
     const querySnapshot = await getDocs(q);
+    const querySnapshot2 = await getDocs(p);
     if (!querySnapshot.empty) {
-      return toast.warn('Select another username');
+      return toast.warn('Select another Email');
+    }
+    if (!querySnapshot2.empty) {
+      return toast.warn('Select another phone');
     }
 
     try {
@@ -62,6 +66,7 @@ export default function Login() {
       await setDoc(doc(db, 'users', res.user.uid), {
         username,
         email,
+        phone,
         avatar: imgUrl,
         id: res.user.uid,
       });
@@ -85,7 +90,6 @@ export default function Login() {
 
     const formData = new FormData(e.target);
     const { email, password } = Object.fromEntries(formData);
-    // console.log(email, password);
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -124,6 +128,7 @@ export default function Login() {
           />
           <input type='text' placeholder='Username' name='username' />
           <input type='text' placeholder='Email' name='email' />
+          <input type='text' placeholder='Phone' name='phone' />
           <input type='password' placeholder='Password' name='password' />
           <button disabled={loading}>{loading ? 'Loading' : 'Sign Up'}</button>
         </form>
