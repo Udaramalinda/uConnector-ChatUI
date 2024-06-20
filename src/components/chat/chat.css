@@ -82,13 +82,15 @@
 }
 
 .chat .center .message {
-  max-width: 70%;
+  align-self: flex-start;
   display: flex;
   gap: 10px;
+  max-width: 70%;
 }
 
 .chat .center .message.own {
   align-self: flex-end;
+  max-width: 70%;
 }
 
 .chat .center .message.own .texts p {
@@ -96,7 +98,7 @@
 }
 
 .chat .center .message img {
-  margin-top: 13px;
+  margin-top: 20px;
   width: 30px;
   height: 30px;
   border-radius: 50%;

@@ -158,6 +158,9 @@ export default function Chat() {
             className={message.sendByMe ? 'message own' : 'message'}
             key={message?.createAt}
           >
+            {!message.sendByMe && (
+              <img src={chatDetails?.receiverAvatar || './avatar.png'} alt='' />
+            )}
             <div className='texts'>
               {message.messageType === 'IMAGE' && (
                 <img
@@ -203,18 +206,6 @@ export default function Chat() {
             </div>
           </div>
         )}
-
-        {/* Remove later */}
-        <div className='message'>
-          <img src='./avatar.png' alt='' />
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
 
         <div ref={endRef}></div>
       </div>

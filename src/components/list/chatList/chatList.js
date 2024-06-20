@@ -65,7 +65,30 @@ export default function ChatList() {
           <img src={chat.receiverAvatar || './avatar.png'} alt='' />
           <div className='texts'>
             <span>{chat.receiverName}</span>
-            <p>{chat.lastMessage}</p>
+            <p>
+              {chat.lastMessage.split(' ').slice(0, 5).join(' ') +
+                (chat.lastMessage.split(' ').length > 5 ? '...' : '')}
+            </p>
+          </div>
+          <div className='time'>
+            <p>
+              {(() => {
+                const messageDate = new Date(chat.updatedAt);
+                const today = new Date();
+                if (
+                  messageDate.getDate() === today.getDate() &&
+                  messageDate.getMonth() === today.getMonth() &&
+                  messageDate.getFullYear() === today.getFullYear()
+                ) {
+                  return messageDate.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                } else {
+                  return messageDate.toLocaleDateString();
+                }
+              })()}
+            </p>
           </div>
         </div>
       ))}
