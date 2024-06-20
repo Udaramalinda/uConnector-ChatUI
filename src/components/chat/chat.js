@@ -8,6 +8,7 @@ import { db } from '../../library/firebase';
 import { uploadMessageAttachment } from '../../library/uploadMessageAttachment';
 import { sendMessage } from '../../services/message.service';
 import { toast } from 'react-toastify';
+import { useChatMessageStore } from '../../library/chatMessageStore';
 
 export default function Chat() {
   const [chat, setChat] = useState();
@@ -22,6 +23,7 @@ export default function Chat() {
 
   const { currentUser } = useUserStore();
   const { chatId, chatDetails } = useChatStore();
+  const { addChatMessages, clearChatMessages } = useChatMessageStore();
 
   const endRef = useRef(null);
 
@@ -30,8 +32,13 @@ export default function Chat() {
   }, [chat?.messages]);
 
   useEffect(() => {
+    console.log('It was run useEffecct');
+    clearChatMessages();
     const unSub = onSnapshot(doc(db, 'chats', chatId), (res) => {
       setChat(res.data());
+      if (res.data().messages) {
+        addChatMessages(res.data().messages);
+      }
     });
 
     return () => {
@@ -103,7 +110,6 @@ export default function Chat() {
 
       const response = await sendMessage(content);
     } catch (err) {
-      // console.log(err);
       toast.error('Message not sent sucessfully!');
     } finally {
       setAttachment({

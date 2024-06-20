@@ -26,8 +26,6 @@ function App() {
 
   if (isLoading) return <div className='loading'>Loading...</div>;
 
-  console.log(currentUser);
-
   return (
     <div className='App'>
       {currentUser ? (

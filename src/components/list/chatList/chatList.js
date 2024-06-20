@@ -13,7 +13,7 @@ export default function ChatList() {
   const [input, setInput] = useState('');
 
   const { currentUser } = useUserStore();
-  const { chatId, changeChat } = useChatStore();
+  const { changeChat } = useChatStore();
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, 'userchats', currentUser.id), (doc) => {
@@ -26,8 +26,6 @@ export default function ChatList() {
       unSub();
     };
   }, [currentUser.id]);
-
-  console.log(chats);
 
   const handleSelect = async (chat) => {
     changeChat(chat.chatId, chat);

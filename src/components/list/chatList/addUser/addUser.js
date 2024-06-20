@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import { chatUserRegister } from '../../../../services/chatuser.register.service';
 
 export default function AddUser() {
-
   const [loading, setLoading] = useState(false);
   const { currentUser } = useUserStore();
 
@@ -43,10 +42,8 @@ export default function AddUser() {
         currentUser,
       };
       const response = await chatUserRegister(newUser);
-      console.log(response);
       toast.success('User added successfully!');
     } catch (err) {
-      console.log(err);
       toast.error('Something went wrong!');
     } finally {
       setLoading(false);

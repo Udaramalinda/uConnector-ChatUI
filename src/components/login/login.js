@@ -77,7 +77,6 @@ export default function Login() {
 
       toast.success('Account created! You can login now!');
     } catch (err) {
-      console.log(err);
       toast.error(err.message);
     } finally {
       setLoading(false);
@@ -93,9 +92,8 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Login success!')
+      toast.success('Login success!');
     } catch (err) {
-      console.log(err);
       toast.error(err.message);
     } finally {
       setLoading(false);
