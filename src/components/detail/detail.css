@@ -105,6 +105,12 @@
   cursor: pointer;
 }
 
+.detail .info .option .privacy {
+  padding-top: 20px;
+  font-size: 14px;
+  color: #a5a5a5;
+}
+
 .detail .info button {
   padding: 15px;
   background-color: rgba(230, 74, 105, 0.553);

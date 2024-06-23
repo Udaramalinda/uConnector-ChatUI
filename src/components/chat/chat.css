@@ -65,7 +65,6 @@
   overflow-x: hidden; /* Hide horizontal scrolling */
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .chat .center::-webkit-scrollbar {
@@ -83,13 +82,15 @@
 }
 
 .chat .center .message {
-  max-width: 70%;
+  align-self: flex-start;
   display: flex;
   gap: 10px;
+  max-width: 70%;
 }
 
 .chat .center .message.own {
   align-self: flex-end;
+  max-width: 70%;
 }
 
 .chat .center .message.own .texts p {
@@ -97,7 +98,7 @@
 }
 
 .chat .center .message img {
-  margin-top: 13px;
+  margin-top: 20px;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -108,7 +109,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* gap: 5px; */
 }
 
 .chat .center .message .texts img {
@@ -119,7 +119,7 @@
 }
 
 .chat .center .message .texts p {
-  padding: 20px;
+  padding: 10px;
   background-color: rgba(17, 25, 40, 0.3);
   border-radius: 10px;
   margin-bottom: 6px;

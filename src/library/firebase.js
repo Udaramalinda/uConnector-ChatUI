@@ -6,7 +6,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: '',
+  apiKey: 'AIzaSyBjYE6OWN18TFhPBE4LZ3oQ4J2XxVjwTTA',
   authDomain: 'uconnector-d50c6.firebaseapp.com',
   projectId: 'uconnector-d50c6',
   storageBucket: 'uconnector-d50c6.appspot.com',

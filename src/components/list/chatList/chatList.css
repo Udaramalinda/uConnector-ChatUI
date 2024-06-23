@@ -89,3 +89,9 @@
   margin: 5px 0px 0px 0px;
   color: #a5a5a5;
 }
+
+.item .time{
+  margin-left: auto;
+  color: #a5a5a5;
+  font-size: 12px;
+}

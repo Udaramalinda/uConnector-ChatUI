@@ -1,115 +1,154 @@
 import { useState, useRef, useEffect } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import './chat.css';
+import { useUserStore } from '../../library/userStore';
+import { useChatStore } from '../../library/chatStore';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { db } from '../../library/firebase';
+import { uploadMessageAttachment } from '../../library/uploadMessageAttachment';
+import { sendMessage } from '../../services/message.service';
+import { toast } from 'react-toastify';
+import { useChatMessageStore } from '../../library/chatMessageStore';
 
 export default function Chat() {
-  // const [chat, setChat] = useState();
+  const [chat, setChat] = useState();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
-  // const [img, setImg] = useState({
-  //   file: null,
-  //   url: "",
-  // });
 
-  // const { currentUser } = useUserStore();
-  // const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
-  //   useChatStore();
+  const [attachment, setAttachment] = useState({
+    file: null,
+    url: '',
+    type: '',
+  });
+
+  const { currentUser } = useUserStore();
+  const { chatId, chatDetails } = useChatStore();
+  const { addChatMessages, clearChatMessages } = useChatMessageStore();
 
   const endRef = useRef(null);
 
-  // add chat.messaegs to useEffect
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
+  }, [chat?.messages]);
 
-  // useEffect(() => {
-  //   const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
-  //     setChat(res.data());
-  //   });
+  useEffect(() => {
+    console.log('It was run useEffecct');
+    clearChatMessages();
+    const unSub = onSnapshot(doc(db, 'chats', chatId), (res) => {
+      setChat(res.data());
+      if (res.data().messages) {
+        addChatMessages(res.data().messages);
+      }
+    });
 
-  //   return () => {
-  //     unSub();
-  //   };
-  // }, [chatId]);
+    return () => {
+      unSub();
+    };
+  }, [chatId]);
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
     setOpen(false);
   };
 
-  // const handleImg = (e) => {
-  //   if (e.target.files[0]) {
-  //     setImg({
-  //       file: e.target.files[0],
-  //       url: URL.createObjectURL(e.target.files[0]),
-  //     });
-  //   }
-  // };
+  const handleAttachment = (e) => {
+    if (e.target.files[0]) {
+      setAttachment({
+        file: e.target.files[0],
+        url: URL.createObjectURL(e.target.files[0]),
+        type: e.target.files[0].type,
+      });
+    }
+  };
 
-  // const handleSend = async () => {
-  //   if (text === "") return;
+  const handleSend = async () => {
+    if (text === '' && !attachment.file) return;
 
-  //   let imgUrl = null;
+    let attachmentUrl = null;
 
-  //   try {
-  //     if (img.file) {
-  //       imgUrl = await upload(img.file);
-  //     }
+    try {
+      if (attachment.file) {
+        attachmentUrl = await uploadMessageAttachment(
+          attachment.file,
+          attachment.type
+        );
+      }
 
-  //     await updateDoc(doc(db, "chats", chatId), {
-  //       messages: arrayUnion({
-  //         senderId: currentUser.id,
-  //         text,
-  //         createdAt: new Date(),
-  //         ...(imgUrl && { img: imgUrl }),
-  //       }),
-  //     });
+      let messageType;
+      let message;
+      if (attachmentUrl) {
+        message = attachmentUrl;
+        if (
+          attachment.type === 'image/jpeg' ||
+          attachment.type === 'image/png'
+        ) {
+          messageType = 'IMAGE';
+        } else if (attachment.type === 'video/mp4') {
+          messageType = 'VIDEO';
+        } else if (attachment.type === 'application/pdf') {
+          messageType = 'DOCUMENT';
+        } else {
+          messageType = 'FILE';
+        }
+      } else {
+        message = text;
+        messageType = 'TEXT';
+      }
 
-  //     const userIDs = [currentUser.id, user.id];
+      const messageData = {
+        sendByMe: true,
+        messageType,
+        message,
+        createdAt: new Date(),
+      };
 
-  //     userIDs.forEach(async (id) => {
-  //       const userChatsRef = doc(db, "userchats", id);
-  //       const userChatsSnapshot = await getDoc(userChatsRef);
+      const content = {
+        messageData,
+        chatDetails,
+        currentUser,
+      };
 
-  //       if (userChatsSnapshot.exists()) {
-  //         const userChatsData = userChatsSnapshot.data();
+      const response = await sendMessage(content);
+    } catch (err) {
+      toast.error('Message not sent sucessfully!');
+    } finally {
+      setAttachment({
+        file: null,
+        url: '',
+        type: '',
+      });
+      setText('');
+    }
+  };
 
-  //         const chatIndex = userChatsData.chats.findIndex(
-  //           (c) => c.chatId === chatId
-  //         );
+  const createDate = (date) => {
+    const today = new Date();
+    const messageDate = new Date(date);
 
-  //         userChatsData.chats[chatIndex].lastMessage = text;
-  //         userChatsData.chats[chatIndex].isSeen =
-  //           id === currentUser.id ? true : false;
-  //         userChatsData.chats[chatIndex].updatedAt = Date.now();
+    if (today.toDateString() === messageDate.toDateString()) {
+      return messageDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } else {
+      return messageDate.toLocaleDateString();
+    }
+  };
 
-  //         await updateDoc(userChatsRef, {
-  //           chats: userChatsData.chats,
-  //         });
-  //       }
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //   } finally{
-  //   setImg({
-  //     file: null,
-  //     url: "",
-  //   });
+  const openAttachment = (url) => {
+    window.open(url, '_blank');
+  };
 
-  //   setText("");
-  //   }
-  // };
+  // console.log(chat);
 
   return (
     <div className='chat'>
       <div className='top'>
         <div className='user'>
-          {/* <img src={user?.avatar || "./avatar.png"} alt="" /> */}
-          <img src='./avatar.png' alt='' />
+          <img src={chatDetails?.receiverAvatar || './avatar.png'} alt='' />
           <div className='texts'>
-            {/* <span>{user?.username}</span> */}
-            <span>Udara Malinda</span>
-            <p>Lorem ipsum dolor, sit amet.</p>
+            <span>{chatDetails?.receiverName}</span>
+            <p>{chatDetails?.receiverChannel}</p>
           </div>
         </div>
         <div className='icons'>
@@ -119,146 +158,83 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* <div className="center">
+      <div className='center'>
         {chat?.messages?.map((message) => (
           <div
-            className={
-              message.senderId === currentUser?.id ? "message own" : "message"
-            }
+            className={message.sendByMe ? 'message own' : 'message'}
             key={message?.createAt}
           >
-            <div className="texts">
-              {message.img && <img src={message.img} alt="" />}
-              <p>{message.text}</p>
-              <span>{format(message.createdAt.toDate())}</span>
+            {!message.sendByMe && (
+              <img src={chatDetails?.receiverAvatar || './avatar.png'} alt='' />
+            )}
+            <div className='texts'>
+              {message.messageType === 'IMAGE' && (
+                <img
+                  onClick={() => openAttachment(message.message)}
+                  src={message.message}
+                  alt=''
+                />
+              )}
+              {message.messageType === 'VIDEO' && (
+                <video
+                  width='320'
+                  height='240'
+                  src={message.message}
+                  controls
+                />
+              )}
+              {message.messageType === 'DOCUMENT' && (
+                // <iframe src={message.message} width='320' height='240'></iframe>
+                <img
+                  src='./document.png'
+                  onClick={() => openAttachment(message.message)}
+                  alt=''
+                />
+              )}
+              {message.messageType === 'TEXT' && <p>{message.message}</p>}
+              <span>{createDate(message.createdAt)}</span>
             </div>
           </div>
         ))}
-        {img.url && (
-          <div className="message own">
-            <div className="texts">
-              <img src={img.url} alt="" />
+        {attachment.url && (
+          <div className='message own'>
+            <div className='texts'>
+              {(attachment.type === 'image/jpeg' ||
+                attachment.type === 'image/png') && (
+                <img src={attachment.url} alt='' />
+              )}
+              {attachment.type === 'video/mp4' && (
+                <video width='320' height='240' src={attachment.url} controls />
+              )}
+              {attachment.type === 'application/pdf' && (
+                <img src='./document.png' alt='' />
+              )}
             </div>
           </div>
         )}
-        <div ref={endRef}></div>
-      </div> */}
 
-      {/* Have to remove later */}
-      <div className='center'>
-        <div className='message own'>
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message'>
-          <img src='./avatar.png' alt='' />
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message own'>
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message'>
-          <img src='./avatar.png' alt='' />
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message own'>
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message'>
-          <img src='./avatar.png' alt='' />
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message own'>
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message'>
-          <img src='./avatar.png' alt='' />
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
-        <div className='message own'>
-          <div className='texts'>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat,
-              doloremque?
-            </p>
-            <span>12:00 PM</span>
-          </div>
-        </div>
         <div ref={endRef}></div>
       </div>
 
       <div className='bottom'>
         <div className='icons'>
+          <img src='./camera.png' alt='' />
+          <img src='./mic.png' alt='' />
           <label htmlFor='file'>
-            <img src='./img.png' alt='' />
+            <img src='./attachment.png' alt='' />
           </label>
           <input
             type='file'
             id='file'
             style={{ display: 'none' }}
-            // onChange={handleImg}
+            onChange={handleAttachment}
           />
-          <img src='./camera.png' alt='' />
-          <img src='./mic.png' alt='' />
         </div>
         <input
           type='text'
-          // placeholder={
-          //   isCurrentUserBlocked || isReceiverBlocked
-          //     ? "You cannot send a message"
-          //     : "Type a message..."
-          // }
           placeholder='Type a message...'
           value={text}
           onChange={(e) => setText(e.target.value)}
-          // disabled={isCurrentUserBlocked || isReceiverBlocked}
         />
         <div className='emoji'>
           <img
@@ -270,11 +246,7 @@ export default function Chat() {
             <EmojiPicker open={open} onEmojiClick={handleEmoji} />
           </div>
         </div>
-        <button
-          className='sendButton'
-          // onClick={handleSend}
-          // disabled={isCurrentUserBlocked || isReceiverBlocked}
-        >
+        <button className='sendButton' onClick={handleSend}>
           Send
         </button>
       </div>
