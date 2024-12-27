@@ -12,10 +12,10 @@ The frontend of µConnect is designed to simplify user interaction with the back
 The project prioritizes usability and security, ensuring real-time communication updates and a visually appealing user interface. By leveraging modern web technologies, µConnect provides a robust solution for managing multi-platform messaging seamlessly.
 
 ### Login Page
-![Login Page](https://via.placeholder.com/800x400?text=Login+Page)
+![Login Page](https://github.com/Udaramalinda/uConnector-ChatUI/blob/main/login-interface.png)
 
 ### Messaging Dashboard
-![Messaging Dashboard](https://via.placeholder.com/800x400?text=Messaging+Dashboard)
+![Messaging Dashboard](https://github.com/Udaramalinda/uConnector-ChatUI/blob/main/chat-interface.png)
 
 ---
 
