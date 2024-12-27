@@ -1,5 +1,7 @@
 # µConnect Frontend
 
+[Backend repository for µConnector](https://github.com/Udaramalinda/uConnector)
+
 Welcome to the frontend repository for the µConnect project. This application serves as the user interface for the µConnect platform, providing seamless interaction with multiple messaging platforms such as WhatsApp, Instagram, Viber, and Telegram through a unified API.
 
 µConnect is designed to simplify the complexities of integrating and managing multiple messaging platforms. By offering a centralized hub for message handling, it enhances both developer productivity and user experience. Whether you are managing customer queries, marketing campaigns, or personal communications, µConnect ensures you can handle everything from one place with ease and security.
